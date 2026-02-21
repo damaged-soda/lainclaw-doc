@@ -5,15 +5,17 @@
 
 ## 1. 变更摘要 (Synopsis)
 
+一句话说明这次变更要影响系统的哪条长期约束与哪条实现细节。
+
 ## 2. 需求变更 (Requirements Delta)
 
 ### 🟢 ADDED Requirements (新增需求)
 
-#### Requirement: <需求名称>
+#### [SOT] Requirement: <需求名称>
 
 The system **SHALL** <系统行为描述>.
 
-##### Scenario: <场景名称> (Gherkin 风格)
+##### Scenario: <场景名称> (Gherkin)
 
 * **GIVEN**: <前置条件>
 * **WHEN**: <触发动作>
@@ -23,28 +25,22 @@ The system **SHALL** <系统行为描述>.
 
 ### 🟡 MODIFIED Requirements (修改需求)
 
-#### Requirement: <原需求 ID 或名称>
+#### [ARCHIVE-ONLY] Requirement: <需求名称>
 
-> **OLD Behavior**: <旧的逻辑>
-> **NEW Behavior**: <新的逻辑>
+- OLD: <旧行为>
+- NEW: <新行为>
 
 ##### Impact Analysis (影响分析)
 
-* 受影响的代码模块: `src/...`
-* 是否需要数据迁移: Yes/No
-
----
+* 受影响的代码模块: docs only
+* 是否需要数据迁移: No
 
 ### 🔴 REMOVED Requirements (移除需求)
 
-#### Requirement: <被删除的需求>
+#### [CANDIDATE] Requirement: <被移除的需求>
 
 * **Reason**: <删除原因>
 
-## 3. 数据结构/API 变更 (Schema/API Changes)typescript
+## 3. 数据结构/API 变更 (Schema/API Changes)
 
-// Example Interface Change
-interface User {
-// ADDED
-lastLoginAt: Date;
-}
+None.

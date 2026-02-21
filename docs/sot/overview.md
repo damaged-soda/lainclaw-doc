@@ -1,13 +1,17 @@
 # 项目概览（SOT）
 
-Last Updated: YYYY-MM-DD
+Last Updated: 2026-02-21
 
 ## 项目是什么
-TODO
+
+Lainclaw 是一个面向轻量级个人 AI 助理场景的项目立项方向，目标是先完成基础可用的文档化基线，再逐步演进能力边界。
 
 ## Repo 列表与职责（与 docmap 对齐）
-- repo-a：TODO（入口：src/repo-a/...）
-- repo-b：TODO（入口：src/repo-b/...）
+- lainclaw：核心应用与交互层入口（`src/lainclaw/...`）
+- docmap 映射：`docmap.yaml` 的 `repos` 路径必须始终与可达的本地仓库实际路径一致。
+- `src/lainclaw` 的 CLI 目标是提供最小可验证入口：通过 `npm link` 可直接使用 `lainclaw` 命令。
 
 ## 本地开发最小路径（只到开发自测）
-- TODO：如何运行/如何测试（不写部署/上线）
+
+- `src/lainclaw`：放置轻量版 Lainclaw 的启动代码和最小功能实现。
+- `docs/`：变更提案与事实文档；`wip/` 中的计划仅在归档后保留。
