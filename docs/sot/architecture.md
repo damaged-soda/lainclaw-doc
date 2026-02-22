@@ -16,6 +16,7 @@ Last Updated: 2026-02-22
 - 对外 CLI 合同以 `--help`、`ask <input>` 为 MVP 最小可用入口；空输入 `ask` 需要返回明确错误与用法提示。
 - `gateway` 需要建立可复用上下文（`requestId`、`createdAt`、原始输入），并通过 pipeline 统一产生结构化输出，便于后续替换模型供应商。
 - 结构化执行结果（含 `route`、`stage`、`result`）属于可观测输出约定，MVP 期间可用 stub 响应替代真实模型。
+- 问答结构化输出在 MVP 阶段继续扩展为记忆可观测字段：`memoryEnabled`、`memoryUpdated`（可选 `memoryFile`）。
 - `gateway -> pipeline -> adapter` 的职责分层保持稳定：gateway 组装 `RequestContext`，pipeline 负责路由（stub/openai-codex），adapter 负责模型调用与鉴权上下文消费。
 - 认证 profile 持久化落在本地 `~/.lainclaw/auth-profiles.json`，其中 `auth login`、`auth status`、`auth use`、`auth logout` 是 CLI 可见接口。
 - 默认 `ask` 仍走离线 stub；仅当 `--provider openai-codex` 时才尝试使用认证 token 发起线上调用；未登录或 profile 缺失时应返回可操作提示。
@@ -24,6 +25,10 @@ Last Updated: 2026-02-22
   - 系统 SHALL 提供基于 `sessionKey` 的 `ask` 持久化会话：首次请求创建 `sessionId`，默认复用；`--new-session` 强制切换新 `sessionId`。
   - `gateway` 在构建上下文时必须携带 `sessionKey`、`sessionId` 与最近历史 `messages`，并将其透传至 pipeline；同会话内新请求需基于历史上下文决策和响应生成策略。
   - 每次成功的 `ask` 必须持久化转写：在 `~/.lainclaw/sessions/<sessionId>.jsonl` 追加 `user` 与 `assistant` 消息，并在 `sessions.json` 中维护 `sessionKey -> sessionId` 索引。
+- 会话记忆增强（第二阶段）：
+  - 系统 SHALL 通过 `--memory` / `--no-memory` / `--memory=<on|off>` 管理 per-session 记忆开关，并在 `sessions` catalog 中持久化状态。
+  - 记忆开启时，`gateway` 先读取并注入 `~/.lainclaw/memory/<sessionKey>.md` 的尾部摘要作为 system 消息到上下文。
+  - compaction 在累计消息数超过阈值（MVP：24）触发；保留最近窗口（MVP：12）用于即时上下文，老内容以摘要写入 `memory` 文件并记录 `compactedMessageCount` 防重复摘要。
 
 ## 跨 repo 交互（如适用）
 
