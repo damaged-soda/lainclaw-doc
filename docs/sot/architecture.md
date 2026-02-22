@@ -20,6 +20,10 @@ Last Updated: 2026-02-22
 - 认证 profile 持久化落在本地 `~/.lainclaw/auth-profiles.json`，其中 `auth login`、`auth status`、`auth use`、`auth logout` 是 CLI 可见接口。
 - 默认 `ask` 仍走离线 stub；仅当 `--provider openai-codex` 时才尝试使用认证 token 发起线上调用；未登录或 profile 缺失时应返回可操作提示。
 - `openai-codex` 路径下的系统提示词/调用参数可迭代优化，不作为长期对外契约，默认以可运行与体验优先。
+- 会话持久化（第一阶段）：
+  - 系统 SHALL 提供基于 `sessionKey` 的 `ask` 持久化会话：首次请求创建 `sessionId`，默认复用；`--new-session` 强制切换新 `sessionId`。
+  - `gateway` 在构建上下文时必须携带 `sessionKey`、`sessionId` 与最近历史 `messages`，并将其透传至 pipeline；同会话内新请求需基于历史上下文决策和响应生成策略。
+  - 每次成功的 `ask` 必须持久化转写：在 `~/.lainclaw/sessions/<sessionId>.jsonl` 追加 `user` 与 `assistant` 消息，并在 `sessions.json` 中维护 `sessionKey -> sessionId` 索引。
 
 ## 跨 repo 交互（如适用）
 
