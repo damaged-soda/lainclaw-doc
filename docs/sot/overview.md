@@ -1,6 +1,6 @@
 # 项目概览（SOT）
 
-Last Updated: 2026-02-21
+Last Updated: 2026-02-22
 
 ## 项目是什么
 
@@ -10,6 +10,7 @@ Lainclaw 是一个面向轻量级个人 AI 助理场景的项目立项方向，�
 - lainclaw：核心应用与交互层入口（`src/lainclaw/...`）
 - docmap 映射：`docmap.yaml` 的 `repos` 路径必须始终与可达的本地仓库实际路径一致。
 - `src/lainclaw` 的 CLI 目标是提供最小可验证入口：通过 `npm link` 可直接使用 `lainclaw` 命令。
+- `src/lainclaw` 当前 MVP 接口采用 `lainclaw --help` 与 `lainclaw ask <input>`，支持离线 stub 流程与结构化输出回显。
 
 ## 本地开发最小路径（只到开发自测）
 

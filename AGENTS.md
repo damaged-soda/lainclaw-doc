@@ -174,3 +174,23 @@
 5. **默认保守**：不确定是否应进入 SOT 的规则，默认标注 `[ARCHIVE-ONLY]` 或 `[CANDIDATE]`，避免污染 SOT。
 
 ---
+
+## 6) Git 与双仓库交付流程
+
+本仓库下存在两套 Git 空间：根仓库（文档/SOT）与 `./src/lainclaw`（实现）。  
+每次交付时，先在回复中给出两个仓库的 commit message 预览，便于确认。
+
+### 6.1 预览要求
+
+- 根仓库（文档与归档）：
+  - 示例：`chore(docs): archive gateway MVP and update SOT with CLI/ask contract`
+- `./src/lainclaw`（实现）：
+  - 示例：`feat(cli): scaffold MVP ask flow with in-process gateway and stub adapter`
+
+### 6.2 执行顺序（默认）
+
+1. 先确认用户接受预览信息，没有再改动的诉求
+2. 先提交根仓库（包含 SOT/Archive 变更），并推送到远程仓库
+3. 再提交 `./src/lainclaw`（包含业务实现变更），并推送到远程仓库
+
+---
