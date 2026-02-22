@@ -16,6 +16,10 @@ Last Updated: 2026-02-22
 - 对外 CLI 合同以 `--help`、`ask <input>` 为 MVP 最小可用入口；空输入 `ask` 需要返回明确错误与用法提示。
 - `gateway` 需要建立可复用上下文（`requestId`、`createdAt`、原始输入），并通过 pipeline 统一产生结构化输出，便于后续替换模型供应商。
 - 结构化执行结果（含 `route`、`stage`、`result`）属于可观测输出约定，MVP 期间可用 stub 响应替代真实模型。
+- `gateway -> pipeline -> adapter` 的职责分层保持稳定：gateway 组装 `RequestContext`，pipeline 负责路由（stub/openai-codex），adapter 负责模型调用与鉴权上下文消费。
+- 认证 profile 持久化落在本地 `~/.lainclaw/auth-profiles.json`，其中 `auth login`、`auth status`、`auth use`、`auth logout` 是 CLI 可见接口。
+- 默认 `ask` 仍走离线 stub；仅当 `--provider openai-codex` 时才尝试使用认证 token 发起线上调用；未登录或 profile 缺失时应返回可操作提示。
+- `openai-codex` 路径下的系统提示词/调用参数可迭代优化，不作为长期对外契约，默认以可运行与体验优先。
 
 ## 跨 repo 交互（如适用）
 

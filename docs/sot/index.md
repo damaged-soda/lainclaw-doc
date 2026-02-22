@@ -1,6 +1,6 @@
 # SOT 索引（Single Source of Truth）
 
-Last Updated: 2026-02-21
+Last Updated: 2026-02-22
 
 当前生效事实只看以下文件（其余计划性文档请放在 `wip/`）：
 
