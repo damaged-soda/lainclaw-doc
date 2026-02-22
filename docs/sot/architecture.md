@@ -19,6 +19,10 @@ Last Updated: 2026-02-22
 - 问答结构化输出在 MVP 阶段继续扩展为记忆可观测字段：`memoryEnabled`、`memoryUpdated`（可选 `memoryFile`）。
 - `gateway -> pipeline -> adapter` 的职责分层保持稳定：gateway 组装 `RequestContext`，pipeline 负责路由（stub/openai-codex），adapter 负责模型调用与鉴权上下文消费。
 - 认证 profile 持久化落在本地 `~/.lainclaw/auth-profiles.json`，其中 `auth login`、`auth status`、`auth use`、`auth logout` 是 CLI 可见接口。
+- 工具能力与 ask 工具闭环契约（MVP）：
+  - 系统 SHALL 提供 `tools list`、`tools info`、`tools invoke` 三类可见命令；工具域包含 `time.now`、`tools.echo`、`shell.pwd`、`fs.list_dir`、`fs.read_file` 的内置集合与最小字段约束。
+  - ask 工具控制参数统一为 `--with-tools` 与 `--tool-allow`，默认允许工具能力；仅将通过白名单的工具注入并执行。
+  - 工具执行统一返回 `toolCalls / toolResults / toolError / sessionContextUpdated`；错误码限定为 `tool_not_found`、`invalid_args`、`execution_error`，并在异常路径下保持 ask 输出骨架完整。
 - 默认 `ask` 仍走离线 stub；仅当 `--provider openai-codex` 时才尝试使用认证 token 发起线上调用；未登录或 profile 缺失时应返回可操作提示。
 - `openai-codex` 路径下的系统提示词/调用参数可迭代优化，不作为长期对外契约，默认以可运行与体验优先。
 - 会话持久化（第一阶段）：

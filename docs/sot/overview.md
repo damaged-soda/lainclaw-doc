@@ -12,6 +12,7 @@ Lainclaw 是一个面向轻量级个人 AI 助理场景的项目立项方向，�
 - `src/lainclaw` 的 CLI 目标是提供最小可验证入口：通过 `npm link` 可直接使用 `lainclaw` 命令。
 - `src/lainclaw` 当前 MVP 接口采用 `lainclaw --help` 与 `lainclaw ask <input>`，支持离线 stub 流程与结构化输出回显。
 - `src/lainclaw` 已支持 `openai-codex` 认证入口与调用闭环，认证文件固定在 `~/.lainclaw/auth-profiles.json`，并提供 profile 切换能力。
+- `src/lainclaw` MVP 工具能力入口已对外稳定化：`tools` 命令与 ask 工具调用闭环作为最小工具链的一部分。
 
 ## 本地开发最小路径（只到开发自测）
 
