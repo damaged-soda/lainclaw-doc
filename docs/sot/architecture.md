@@ -15,6 +15,13 @@ Last Updated: 2026-02-22
 - 文档驱动仓库映射必须可达：`docmap.yaml` 中 `repos` 的每个 `path` 应可被构建/链接流程访问。
 - 对外 CLI 合同以 `--help`、`ask <input>` 为 MVP 最小可用入口；空输入 `ask` 需要返回明确错误与用法提示。
 - `gateway` 需要建立可复用上下文（`requestId`、`createdAt`、原始输入），并通过 pipeline 统一产生结构化输出，便于后续替换模型供应商。
+- 飞书网关在 `gateway --channel feishu`（兼容 `feishu` 命令）下，必须透传以下参数到 `runAsk`：
+  - `--provider <provider>`：默认 `openai-codex`；当前阶段仅支持 `openai-codex`。
+  - `--profile <profileId>`：绑定 openai-codex profile，缺省走 active profile。
+  - `--with-tools|--no-with-tools`：控制模型 tool-call 能力。
+  - `--tool-allow <tool1,tool2>`：工具白名单（空值表示按默认策略）。
+  - `--tool-max-steps <N>`：工具自动循环上限，`N>=1`。
+  - `--memory|--no-memory`：会话记忆摘要注入开关。
 - 结构化执行结果（含 `route`、`stage`、`result`）属于可观测输出约定，MVP 期间可用 stub 响应替代真实模型。
 - 问答结构化输出在 MVP 阶段继续扩展为记忆可观测字段：`memoryEnabled`、`memoryUpdated`（可选 `memoryFile`）。
 - `gateway -> pipeline -> adapter` 的职责分层保持稳定：gateway 组装 `RequestContext`，pipeline 负责路由（stub/openai-codex），adapter 负责模型调用与鉴权上下文消费。
