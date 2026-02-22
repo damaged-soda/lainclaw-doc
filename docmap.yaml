@@ -1,3 +1,5 @@
 repos:
   - name: lainclaw
     path: ./src/lainclaw
+  - name: openclaw-readonly
+    path: ./src/openclaw
