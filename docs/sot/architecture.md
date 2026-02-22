@@ -23,6 +23,9 @@ Last Updated: 2026-02-22
   - 系统 SHALL 提供 `tools list`、`tools info`、`tools invoke` 三类可见命令；工具域包含 `time.now`、`tools.echo`、`shell.pwd`、`fs.list_dir`、`fs.read_file` 的内置集合与最小字段约束。
   - ask 工具控制参数统一为 `--with-tools` 与 `--tool-allow`，默认允许工具能力；仅将通过白名单的工具注入并执行。
   - 工具执行统一返回 `toolCalls / toolResults / toolError / sessionContextUpdated`；错误码限定为 `tool_not_found`、`invalid_args`、`execution_error`，并在异常路径下保持 ask 输出骨架完整。
+  - openai-codex provider 在 `--provider openai-codex && --with-tools` 下启用模型 tool-call 自动闭环：路由返回 `tool_calls` 时执行后续回写上下文并可进入下一轮，默认上限为 `--tool-max-steps=3`（取值为整数且 `>=1`）。
+  - 达到 `tool-max-steps` 上限时停止继续调用，并在 `toolError` 中写入 `execution_error`；该上限对模型自动 tool-call 循环生效。
+  - 手工 `tool:` 触发逻辑仍保留：在未返回 model `tool_calls` 或 `provider` 非 openai-codex 时，仍按前缀解析执行并返回可观测的 `toolCalls/toolResults/toolError`。
 - 默认 `ask` 仍走离线 stub；仅当 `--provider openai-codex` 时才尝试使用认证 token 发起线上调用；未登录或 profile 缺失时应返回可操作提示。
 - `openai-codex` 路径下的系统提示词/调用参数可迭代优化，不作为长期对外契约，默认以可运行与体验优先。
 - 会话持久化（第一阶段）：

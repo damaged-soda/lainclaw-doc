@@ -1,0 +1,52 @@
+# Tasks
+
+- [ ] 在 `src/lainclaw/src/cli/cli.ts` 支持 `--tool-max-steps` 参数：
+  - 解析并校验值为整数且 `>= 1`。
+  - 默认值使用 `3`。
+  - 无效值（`0`、非数值）应返回清晰错误。
+- [ ] 在 `src/lainclaw/src/adapters/codexAdapter.ts` 定义并返回 `toolCalls`（从 openai-codex 响应中解析）。
+- [ ] 在 `src/lainclaw/src/adapters/codexAdapter.ts` 支持将可见工具清单注入模型调用上下文（受 `tool-allow` 约束）。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 保留现有手工 `tool:` 触发路径，并在 provider openai-codex 与 `withTools=true` 时启用自动 tool-call 路径。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 实现 tool-call 迭代闭环：
+  - 执行 1~N 轮（默认 3 轮）。
+  - 每轮 pipeline 返回工具调用则执行、记录 `toolResults`，写入上下文继续第二轮。
+  - 无工具调用则直接返回 assistant 结果。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 增加工具轮次上限命中保护，超过上限时停止循环并通过 `toolError` 标记。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 实现 `tool-allow` 对 auto tool-call 的白名单过滤（含 `tool_not_found` 处理）。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 保持异常稳定性：工具不存在/参数错误/执行异常时，`toolError` 可见，`success=true`（除非会话创建失败等底层错误）。
+- [ ] 在 `src/lainclaw/src/gateway/askGateway.ts` 确保 session 回写 `msg-tool-context` 与 `sessionContextUpdated` 在 tool 执行场景成立。
+- [ ] 实施任务：`ask --provider openai-codex --tool-max-steps=3 --with-tools` 进入 tool-call 自动执行最小链路（人工验证）。
+- [ ] 实施任务：`--tool-max-steps=0` 拒绝参数。
+- [ ] 实施任务：`--tool-max-steps=abc` 拒绝参数。
+- [ ] 实施任务：`--tool-max-steps` 缺省时默认 `3`。
+- [ ] 实施任务：模型 `tool_calls` 非空时解析出 `name/args/id`。
+- [ ] 实施任务：`tool_calls` 空数组时按普通文本链路。
+- [ ] 实施任务：`tool_calls` 结构不合法时 fallback 到文本，不抛未捕获异常。
+- [ ] 实施任务：单轮工具调用成功后执行并进入复投喂。
+- [ ] 实施任务：多轮工具调用执行后终止于无 tool_calls 或上限。
+- [ ] 实施任务：`--tool-max-steps=2` 时超过上限则终止。
+- [ ] 实施任务：`--tool-allow=time.now,shell.pwd` 拒绝未允许工具。
+- [ ] 实施任务：`ask "tool:time.now"` 在 auto mode 下仍走手工触发链路。
+- [ ] 实施任务：`--with-tools=false` 时即使模型有 tool_calls 也不执行工具。
+- [ ] 实施任务：未知工具返回 `tool_not_found` 并可见 `toolError`。
+- [ ] 实施任务：参数错误返回 `invalid_args`。
+- [ ] 实施任务：执行异常返回 `execution_error`。
+- [ ] 实施任务：`GatewayResult` 包含 `toolCalls/toolResults/toolError/sessionContextUpdated`。
+- [ ] 实施任务：工具执行场景 session 附加 `msg-tool-context`。
+- [ ] 实施任务：最终 `result` 与 `session` 持久化一致。
+- [ ] 补充实现偏差回填到 `docs/wip/20260222-codex-tool-autocall/tasks.md`。
+
+## 验收执行记录（2026-02-22）
+
+- [x] `npm run build`：通过（当前工作树编译成功）
+- [x] `lainclaw ask --tool-max-steps=abc hello`：参数错误提示并退出
+- [x] `lainclaw ask --tool-max-steps=0 hello`：参数错误提示并退出
+- [x] `lainclaw ask --provider openai-codex --tool-max-steps=3 "请直接回答：pong"`：成功返回文本，`route=codex`，`toolCalls` 空
+- [x] `lainclaw ask --provider openai-codex --tool-allow time.now --tool-max-steps=2 "请使用 time.now 工具并只返回 ISO 时间"`：返回成功，`toolCalls` 与 `toolResults` 同时存在，`sessionContextUpdated=true`
+- [x] `lainclaw ask --provider openai-codex --tool-allow time.now --tool-max-steps=1 "请调用time.now"`：返回 `toolError` `execution_error`（`tool call loop exceeded max steps (1)`）
+- [x] `lainclaw ask --provider openai-codex --tool-allow time.now --with-tools=false "请调用time.now"`：无 `toolCalls`，返回纯文本结果
+- [x] `lainclaw ask --tool-allow time.now "tool:time.now"`：手工触发成功，`toolCalls/toolResults` 与 `toolError` 可见
+- [x] `lainclaw ask --tool-allow time.now "tool:does.not.exist"`：返回 `tool_not_found` 并带 `toolError`
+- [x] `lainclaw ask --tool-allow time.now 'tool:time.now {\"foo\":1}'`：返回 `invalid_args` 并可见 `toolError`
+- [x] `lainclaw ask 'tool:['`：返回 `invalid_args` fallback，未出现未捕获异常
+- [x] `lainclaw ask --provider openai-codex "tool:time.now"`：手工触发路径，返回 `toolCalls` + `toolResults`，不再出现 tool_result 协议错误
