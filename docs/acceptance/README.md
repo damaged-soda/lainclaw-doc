@@ -4,3 +4,4 @@
 
 - `agent-local-channel-acceptance.md`：local channel 闭环验收（启动/状态检查/inbox/outbox 回执/停机）。
 - `gateway-config-abstraction-acceptance.md`：`gateway config` 分层语义验收（default/channels 与 provider 全局字段边界）。
+- `ask-new-command-acceptance.md`：`/new` 会话重置命令验收。
