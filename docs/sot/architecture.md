@@ -44,12 +44,12 @@ Last Updated: 2026-02-23
 - `gateway` 服务化入口支持：
   - `gateway status [--channel <channel>]`：读取服务状态（`running`/`stopped`、`pid`、`startedAt`、`statePath`、`logPath`）。
   - `gateway stop [--channel <channel>]`：终止网关进程并清理 service state。
-  - `gateway start --daemon`：后台化运行并持久化状态文件（默认 `~/.lainclaw/service/<channel>-gateway-service.json`）。
+- `gateway start --daemon`：后台化运行并持久化状态文件（默认 `~/.lainclaw/service/gateway-service.json`）。状态结构记录 `channel` 与 `channels`，用于区分多实例运行状态。
 
 - `gateway config` 作为持久化配置入口：
-  - `gateway config set`：将网关参数持久化到 `~/.lainclaw/<channel>-gateway.json`（`feishu` 为 `~/.lainclaw/feishu-gateway.json`）。
+- `gateway config set`：将网关参数持久化到 `~/.lainclaw/gateway.json`（`default` 为通用分层，`channels` 下按频道覆盖）。
   - `gateway config show [--channel <channel>]`：展示已持久化参数（脱敏）。
-  - `gateway config clear [--channel <channel>]`：清理配置文件。
+- `gateway config clear [--channel <channel>]`：清理配置分层（无 `--channel` 清理 `default`，有 `--channel` 清理 `channels[channel]`）。
 - 结构化执行结果（含 `route`、`stage`、`result`）属于可观测输出约定，MVP 期间可用 stub 响应替代真实模型。
 - 用户可见文本默认不得携带模型源调试前缀；`adapter` 返回的正文应保留纯文本语义，除非显式开启调试开关用于排障观察。
   - 默认行为：不在 `result` 前缀注入 `openai-codex:<profileId>` 等来源标识。
