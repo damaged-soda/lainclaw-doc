@@ -1,0 +1,23 @@
+# Tasks: Gateway Service Mode (Channel-Agnostic)
+
+- [x] 在 `src/lainclaw/src/gateway/` 新增 `service.ts`（服务化基础设施）：
+  - 计算服务文件路径（pid/state/log 默认路径）。
+  - 读写/清理 service state。
+  - `isProcessAlive(pid)` 与 `readServiceState()`/`clearServiceState()`。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 的 `printUsage()` 中补充 `gateway start/status/stop` 示例。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 的参数解析中补充服务化子命令参数：
+  - `start`、`status`、`stop` 以及 `--pid-file`、`--log-file`。
+  - `--service-child` 作为内部标记解析并禁止暴露为用户可见业务路径。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 的 `runFeishuGatewayWithHeartbeat()` 中实现分发：
+  - `status`：读取 state 并输出服务状态。
+  - `stop`：读取 state 后优雅关闭目标进程（SIGTERM，超时后 SIGKILL）。
+  - `daemon`：spawn child 后持久化 state 并返回，child 直接启动网关主循环。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 增加重复启动保护：
+  - 已有存活 pid 时，`--daemon` 给出可读错误并拒绝启动。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 增加启动前飞书凭据兜底校验：
+  - 缺失/明显占位的 `appId/appSecret` 直接报错，提示用户清理配置并重试。
+- [x] 在 `src/lainclaw/README.md` 增补最小服务化使用说明（启动、状态、停止、日志文件）。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 增加 `gateway config` 命令：
+  - `config set` 持久化配置项到 `~/.lainclaw/feishu-gateway.json`。
+  - `config show` 输出脱敏后的持久化配置。
+  - `config clear` 清理持久化配置文件。
