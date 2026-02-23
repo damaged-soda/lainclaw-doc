@@ -9,6 +9,8 @@
 - **文档空间** (Definition): `./docs/`
 - **代码空间** (Implementation): `./src/`  
   - 禁止将业务代码写入 docs，禁止将规范写入 src（除非是代码注释/README 等代码侧文档）。
+- **验收手册空间** (Acceptance Handbook): `./docs/acceptance/`  
+  - 复用性验收流程、调试步骤、联通清单统一放在此目录。
 - **仓库映射** (Single Source of Truth): `./docmap.yaml`  
   - 一切路径/模块定位以 `docmap.yaml` 为准：先读再动，禁止猜测文件位置。
 

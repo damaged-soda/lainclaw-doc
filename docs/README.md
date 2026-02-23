@@ -12,3 +12,6 @@
 - 实现：仅修改实现前已批准范围内的文件
 - 验收/归档：完成自验后进入归档
 - 归档：`WIP` 目录移至 `./docs/archive/`
+
+持续复用文档：
+- 验收与本地闭环手册：`acceptance/agent-local-channel-acceptance.md`
