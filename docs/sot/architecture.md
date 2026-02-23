@@ -16,12 +16,30 @@ Last Updated: 2026-02-22
 - 对外 CLI 合同以 `--help`、`ask <input>` 为 MVP 最小可用入口；空输入 `ask` 需要返回明确错误与用法提示。
 - `gateway` 需要建立可复用上下文（`requestId`、`createdAt`、原始输入），并通过 pipeline 统一产生结构化输出，便于后续替换模型供应商。
 - 飞书网关入口为 `gateway start`（默认频道 `feishu`，可用 `--channel <channel>` 显式覆盖，当前实现仅支持 `feishu`）。启动参数必须透传以下配置到 `runAsk`：
-  - `--provider <provider>`：默认 `openai-codex`；当前阶段仅支持 `openai-codex`。
-  - `--profile <profileId>`：绑定 openai-codex profile，缺省走 active profile。
-  - `--with-tools|--no-with-tools`：控制模型 tool-call 能力。
-  - `--tool-allow <tool1,tool2>`：工具白名单（空值表示按默认策略）。
+- `--provider <provider>`：默认 `openai-codex`；当前阶段仅支持 `openai-codex`。
+- `--profile <profileId>`：绑定 openai-codex profile，缺省走 active profile。
+- `--with-tools|--no-with-tools`：控制模型 tool-call 能力。
+- `--tool-allow <tool1,tool2>`：工具白名单（空值表示按默认策略）。
 - `--tool-max-steps <N>`：工具自动循环上限，`N>=1`。
 - `--memory|--no-memory`：会话记忆摘要注入开关。
+- `--pairing-policy <open|allowlist|pairing|disabled>`：飞书 DM 鉴权策略，`open` 放行所有、`allowlist` 只允许 allow list、`pairing` 触发配对流程、`disabled` 拒绝全部。
+- `--pairing-allow-from <id1,id2>`：配置允许名单（支持按账号或全局文件）。
+- `--pairing-pending-ttl-ms <ms>`：配对 pending 超时窗口（默认 `3600000`）。
+- `--pairing-pending-max <n>`：待审批 pending 上限（默认 `3`）。
+- `gateway` 在进入 `runAsk` 前需按 `pairingPolicy` 做鉴权：
+  - `open`：所有飞书 DM 允许执行。
+  - `allowlist`：仅 `pairingAllowFrom` 命中允许。
+  - `pairing`：未命中时返回 pairing code 并创建/更新 pending；通过后放行。
+  - `disabled`：全部飞书 DM 拒绝。
+- 飞书配对持久化约定：
+  - pending 文件默认落盘 `~/.lainclaw/<channel>-pairing.json`，字段至少包含 `id`、`code`、`createdAt`、`lastSeenAt`、`meta`（可选）。
+  - allow-from 文件默认落盘 `~/.lainclaw/<channel>-allowFrom.json` 与 `~/.lainclaw/<channel>-<account>-allowFrom.json`，采用账号隔离读取（优先当前账号，再回退 legacy 全局）。
+  - pending 在读取/列出/审批流程中执行 TTL 清理与上限修剪。
+- `pairing` 命令对外行为：
+  - `pairing list [--channel <channel>] [--account <accountId>] [--json]`：查看待审批项。
+  - `pairing approve [--channel <channel>] [--account <accountId>] <code>`：按 code 审批。
+  - `pairing revoke [--channel <channel>] [--account <accountId>] <entry>`：移除 allow-from。
+  - 当前仅支持 `feishu` 通道。
 
 - `gateway` 服务化入口支持：
   - `gateway status [--channel <channel>]`：读取服务状态（`running`/`stopped`、`pid`、`startedAt`、`statePath`、`logPath`）。

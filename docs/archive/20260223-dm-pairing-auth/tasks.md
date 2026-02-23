@@ -1,0 +1,10 @@
+- [x] 完成提案对齐：确认 `pairing` 采用的 scope（先飞书 DM，仅飞书）与默认策略。
+- [x] 基于 openclaw pairing-store 机制设计 LainClaw 的持久化契约（字段、TTL、并发边界、按账号 allowFrom）。
+- [x] 在 `src/lainclaw/src/channels/feishu/config.ts` 增加配对策略与存储相关配置项。
+- [x] 在 `src/lainclaw/src/channels/feishu/server.ts` 接入配对授权前置，覆盖 `runAsk` 前的决策分支。
+- [x] 新增/抽象配对运行时模块（按实现路径），补充待审批与批准列表查询能力。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 增加配对命令（list、approve）并对接 runtime/存储层。
+- [x] 在 `src/lainclaw/src/cli/cli.ts` 新增 `pairing revoke` 命令并对接 allowFrom 移除能力（`pairing` 模块实现）。
+- [x] 编写单元测试覆盖关键边界并补充失败路径。
+- [x] 补充 `docs` 文档与 README 使用说明，明确默认策略、配置字段和 CLI 用法。
+- [x] 生成实现摘要供验收（不在本阶段实现时准备模板即可）。
