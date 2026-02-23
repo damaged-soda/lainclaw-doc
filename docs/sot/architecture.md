@@ -1,6 +1,6 @@
 # 架构说明（SOT）
 
-Last Updated: 2026-02-22
+Last Updated: 2026-02-23
 
 ## 模块边界（按 repo 或关键模块描述）
 
@@ -51,6 +51,9 @@ Last Updated: 2026-02-22
   - `gateway config show [--channel <channel>]`：展示已持久化参数（脱敏）。
   - `gateway config clear [--channel <channel>]`：清理配置文件。
 - 结构化执行结果（含 `route`、`stage`、`result`）属于可观测输出约定，MVP 期间可用 stub 响应替代真实模型。
+- 用户可见文本默认不得携带模型源调试前缀；`adapter` 返回的正文应保留纯文本语义，除非显式开启调试开关用于排障观察。
+  - 默认行为：不在 `result` 前缀注入 `openai-codex:<profileId>` 等来源标识。
+  - 调试行为：在显式开关下可按需注入来源信息，便于链路追踪与问题定位。
 - 问答结构化输出在 MVP 阶段继续扩展为记忆可观测字段：`memoryEnabled`、`memoryUpdated`（可选 `memoryFile`）。
 - `gateway -> pipeline -> adapter` 的职责分层保持稳定：gateway 组装 `RequestContext`，pipeline 负责路由（stub/openai-codex），adapter 负责模型调用与鉴权上下文消费。
 - 认证 profile 持久化落在本地 `~/.lainclaw/auth-profiles.json`，其中 `auth login`、`auth status`、`auth use`、`auth logout` 是 CLI 可见接口。
