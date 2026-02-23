@@ -1,0 +1,5 @@
+- [x] 扩展 `parseGatewayArgs`，支持 `gateway start` 多次 `--channel`，返回 `channels`。
+- [x] 在多通道 `gateway start` 中加入 `runGatewayServiceForChannels`，实现 daemon 与前台双路径。
+- [x] 将 `GatewayServiceState` 增加 `channels` 字段并同步 `gateway status` 回显。
+- [x] 为多通道 daemon 启动添加统一的预检（至少覆盖 `feishu` 的凭据/心跳参数）。
+- [x] 更新 CLI 使用提示与帮助文案中的 `--channel` 重复语义。

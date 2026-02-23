@@ -7,10 +7,13 @@
 - `docs/wip/20260223-local-channel-acceptance` 对应的代码实现已就绪。
 - 已在 `src/lainclaw` 执行过 `npm run build`。
 - 运行命令时有可用 `openai-codex` profile（从用户本地配置自动读取）。
+- 若使用隔离 `HOME`，请提前同步认证文件：
+  - `mkdir -p <HOME>/.lainclaw && cp "$HOME_ORIGIN/.lainclaw/auth-profiles.json" <HOME>/.lainclaw/`
+  - 例如：`HOME_ORIGIN=/home/<你当前用户>`，`HOME=/tmp/lainclaw-local`.
 
 ## 推荐约束
-- 使用独立环境变量 `HOME`，避免直接污染默认 `~/.lainclaw`：
-  - `HOME=/home/verify-lainclaw-local`
+- 建议使用独立环境变量 `HOME`，避免直接污染默认 `~/.lainclaw`：
+  - `HOME=/tmp/verify-lainclaw-local`
 - 使用固定状态与日志路径避免互相干扰：
   - `LOCAL_STATE=/tmp/lainclaw-local-gateway.pid`
   - `LOCAL_LOG=/tmp/lainclaw-local-gateway.log`
@@ -35,7 +38,7 @@
    - 通过条件：输出 JSON 的 `status` 为 `running`，`channel` 为 `local`，`pid` 非空。
 
 5. 写入本地消息（inbox）
-   - 目标路径：`<HOME>/local-gateway/local-gateway-inbox.jsonl`
+   - 目标路径：`<HOME>/.lainclaw/local-gateway/local-gateway-inbox.jsonl`
    - 追加一行 JSON，例如：
      ```json
      {"requestId":"local-verify-001","input":"请用3个字说明今天的天气","sessionKey":"local-acceptance"}
@@ -43,7 +46,7 @@
    - 通过条件：命令返回成功，文件追加成功。
 
 6. 观察回执（outbox）
-   - 目标路径：`<HOME>/local-gateway/local-gateway-outbox.jsonl`
+   - 目标路径：`<HOME>/.lainclaw/local-gateway/local-gateway-outbox.jsonl`
    - 等待 1-3 秒后读取新增行。
    - 通过条件：出现至少一条 JSONL，满足：
      - `channel == "local"`
