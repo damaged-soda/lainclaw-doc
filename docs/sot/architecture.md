@@ -32,9 +32,9 @@ Last Updated: 2026-02-23
   - `pairing`：未命中时返回 pairing code 并创建/更新 pending；通过后放行。
   - `disabled`：全部飞书 DM 拒绝。
 - 飞书配对持久化约定：
-  - pending 文件默认落盘 `~/.lainclaw/<channel>-pairing.json`，字段至少包含 `id`、`code`、`createdAt`、`lastSeenAt`、`meta`（可选）。
-  - allow-from 文件默认落盘 `~/.lainclaw/<channel>-allowFrom.json` 与 `~/.lainclaw/<channel>-<account>-allowFrom.json`，采用账号隔离读取（优先当前账号，再回退 legacy 全局）。
-  - pending 在读取/列出/审批流程中执行 TTL 清理与上限修剪。
+  - pending 默认落盘 `~/.lainclaw/gateway.json` 的 `pairing.channels[<channel>].requests`，字段包括 `id`、`code`、`createdAt`、`lastSeenAt`、可选 `meta`。
+  - allow-from 默认落盘 `~/.lainclaw/gateway.json` 的 `pairing.channels[<channel>].allowFrom`，账号级允许列表为 `pairing.channels[<channel>].accountAllowFrom[accountId]`（当前实现可支持）。
+  - requests 的 TTL 清理与 pending 上限修剪在读取/list/审批流程内生效。
 - `pairing` 命令对外行为：
   - `pairing list [--channel <channel>] [--account <accountId>] [--json]`：查看待审批项。
   - `pairing approve [--channel <channel>] [--account <accountId>] <code>`：按 code 审批。
