@@ -3,3 +3,5 @@ repos:
     path: ./src/lainclaw
   - name: openclaw-readonly
     path: ./src/openclaw
+  - name: nanobot-readonly
+    path: ./src/nanobot
